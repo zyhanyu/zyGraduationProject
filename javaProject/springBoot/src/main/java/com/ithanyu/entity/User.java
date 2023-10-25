@@ -3,18 +3,23 @@ package com.ithanyu.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author zyhanyu
  * @since 2023-10-25
  */
 @TableName("sys_user")
+@Data
+@ToString
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,7 +70,7 @@ public class User implements Serializable {
      */
       private String avatarUrl;
 
-    
+
     public Integer getId() {
         return id;
     }
@@ -73,7 +78,7 @@ public class User implements Serializable {
       public void setId(Integer id) {
           this.id = id;
       }
-    
+
     public String getUsername() {
         return username;
     }
@@ -81,7 +86,7 @@ public class User implements Serializable {
       public void setUsername(String username) {
           this.username = username;
       }
-    
+
     public String getPassword() {
         return password;
     }
@@ -89,7 +94,7 @@ public class User implements Serializable {
       public void setPassword(String password) {
           this.password = password;
       }
-    
+
     public String getNickname() {
         return nickname;
     }
@@ -97,7 +102,7 @@ public class User implements Serializable {
       public void setNickname(String nickname) {
           this.nickname = nickname;
       }
-    
+
     public String getEmail() {
         return email;
     }
@@ -105,7 +110,7 @@ public class User implements Serializable {
       public void setEmail(String email) {
           this.email = email;
       }
-    
+
     public String getPhone() {
         return phone;
     }
@@ -113,7 +118,7 @@ public class User implements Serializable {
       public void setPhone(String phone) {
           this.phone = phone;
       }
-    
+
     public String getAddress() {
         return address;
     }
@@ -121,7 +126,7 @@ public class User implements Serializable {
       public void setAddress(String address) {
           this.address = address;
       }
-    
+
     public LocalDateTime getCreateTime() {
         return createTime;
     }
@@ -129,7 +134,7 @@ public class User implements Serializable {
       public void setCreateTime(LocalDateTime createTime) {
           this.createTime = createTime;
       }
-    
+
     public String getAvatarUrl() {
         return avatarUrl;
     }

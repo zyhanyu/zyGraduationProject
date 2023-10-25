@@ -46,6 +46,11 @@ public class UserController {
         return userService.removeById(id);
     }
 
+    @DeleteMapping("/del/batch/")
+    public boolean deleteBatch(@PathVariable List<Integer> ids){
+        return userService.removeByIds(ids);
+    }
+
     // 分页查询
     // 接口路径：/user/page
     // @RequestParam接收

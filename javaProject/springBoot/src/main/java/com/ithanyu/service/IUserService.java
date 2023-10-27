@@ -1,5 +1,6 @@
 package com.ithanyu.service;
 
+import com.ithanyu.controller.dto.UserDto;
 import com.ithanyu.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface IUserService extends IService<User> {
 
+    boolean login(UserDto userDto);
 }

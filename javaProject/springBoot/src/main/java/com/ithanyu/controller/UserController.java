@@ -56,6 +56,16 @@ public class UserController {
         return Result.success(dto);
     }
 
+    @PostMapping("/rigister")
+    public Result register(@RequestBody UserDto userDto){
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            return Result.error(Constants.CODE_400,"参数错误");
+        }
+        return Result.success(userService.register(userDto));
+    }
+
     // 新增或更新
     @PostMapping
     public boolean save(@RequestBody User user){

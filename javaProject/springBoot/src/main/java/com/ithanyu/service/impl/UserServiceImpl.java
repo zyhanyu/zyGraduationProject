@@ -1,9 +1,12 @@
 package com.ithanyu.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ithanyu.common.Constants;
 import com.ithanyu.controller.dto.UserDto;
 import com.ithanyu.entity.User;
+import com.ithanyu.exception.ServiceException;
 import com.ithanyu.mapper.UserMapper;
 import com.ithanyu.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,21 +28,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private static final Log LOG = Log.get();
 
     @Override
-    public boolean login(UserDto userDto) {
+    public UserDto login(UserDto userDto) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username",userDto.getUsername());
         queryWrapper.eq("password",userDto.getPassword());
 
         // List<User> list = list(queryWrapper);// 方式一
         // return list.size() != 0;
-
+        User one;
         try {
-            User user = getOne(queryWrapper);
-            return user != null;
+            one = getOne(queryWrapper); // 从数据库查询用户信息
         }catch(Exception e){
             LOG.error(e);
-            return false;
+            throw new  ServiceException(Constants.CODE_500,"系统错误");
         }
-
+        if (one != null){
+            BeanUtil.copyProperties(one,userDto,true);
+            return userDto;
+        }else{
+            throw new  ServiceException(Constants.CODE_600,"用户名或密码错误");
+        }
     }
 }

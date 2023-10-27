@@ -68,33 +68,40 @@ public class UserController {
 
     // 新增或更新
     @PostMapping
-    public boolean save(@RequestBody User user){
-        return userService.saveOrUpdate(user);
+    public Result save(@RequestBody User user){
+        return Result.success(userService.saveOrUpdate(user));
+    }
+
+    @GetMapping("/username/{username}")
+    public Result findOne(@PathVariable String username){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        return Result.success(userService.getOne(queryWrapper));
     }
 
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Integer id){
-        return userService.removeById(id);
+    public Result delete(@PathVariable Integer id){
+        return Result.success(userService.removeById(id));
     }
 
     @DeleteMapping("/del/batch/")
-    public boolean deleteBatch(@RequestBody List<Integer> ids){
-        return userService.removeByIds(ids);
+    public Result deleteBatch(@RequestBody List<Integer> ids){
+        return Result.success(userService.removeByIds(ids));
     }
 
     // 查看所有数据
     @GetMapping
-    public List<User> findAll(){
-        return userService.list();
+    public Result findAll(){
+        return Result.success(userService.list());
     }
 
     @GetMapping("/{id}")
-    public User findOne(@PathVariable Integer id){
-        return userService.getById(id);
+    public Result findOne(@PathVariable Integer id){
+        return Result.success(userService.getById(id));
     }
 
     @GetMapping("/page")
-    public Page<User> findOne(@RequestParam Integer pageNum,
+    public Result findOne(@RequestParam Integer pageNum,
                               @RequestParam Integer pageSize,
                               @RequestParam(defaultValue = "") String username,
                               @RequestParam(defaultValue = "")  String email,
@@ -111,7 +118,7 @@ public class UserController {
             queryWrapper.like("address", address);
         }
         queryWrapper.orderByDesc("id");
-        return userService.page(new Page<>(pageNum,pageSize),queryWrapper);
+        return Result.success(userService.page(new Page<>(pageNum,pageSize),queryWrapper));
     }
 
     @GetMapping("/export")
@@ -147,7 +154,7 @@ public class UserController {
     }
 
     @PostMapping("/import")
-    public boolean imp(MultipartFile file) throws IOException {
+    public Result imp(MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         // 方式1：（推荐）通过 javabean的方式读取Excel内的对象，但要求表头必须是英文，根 javabean的属性要求对应起来
@@ -168,7 +175,7 @@ public class UserController {
         }
         System.out.println(users);
         userService.saveBatch(users);
-        return true;
+        return Result.success(true);
     }
 }
 

@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ithanyu.common.Constants;
 import com.ithanyu.common.Result;
 import com.ithanyu.controller.dto.UserDto;
+import com.ithanyu.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
@@ -118,6 +119,11 @@ public class UserController {
             queryWrapper.like("address", address);
         }
         queryWrapper.orderByDesc("id");
+
+        User currentUser = TokenUtils.getCurrentUser();
+
+        // 获取当前用户信息
+        System.out.println("获得当前用户信息"+currentUser.getNickname());
         return Result.success(userService.page(new Page<>(pageNum,pageSize),queryWrapper));
     }
 

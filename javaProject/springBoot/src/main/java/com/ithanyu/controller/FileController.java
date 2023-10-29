@@ -11,8 +11,13 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ithanyu.common.Result;
 import com.ithanyu.entity.Files;
+import com.ithanyu.entity.User;
 import com.ithanyu.mapper.FileMapper;
+import com.ithanyu.utils.TokenUtils;
 import org.apache.velocity.util.introspection.SecureUberspector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -123,5 +128,55 @@ public class FileController {
         queryWrapper.eq("md5",md5);
         List<Files> filesList = fileMapper.selectList(queryWrapper);
         return filesList.size() == 0 ? null : filesList.get(0);
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestBody Files files){
+        return Result.success(fileMapper.updateById(files));
+    }
+
+    @DeleteMapping("/{id}")
+    public Result findOne(@PathVariable Integer id){
+        Files files = fileMapper.selectById(id);
+        files.setIsDelete(true);
+        fileMapper.updateById(files);
+        return Result.success();
+    }
+
+    @DeleteMapping("/del/batch/")
+    public Result deleteBatch(@RequestBody List<Integer> ids){
+        // select * from sys_file where id in (id,id,id)
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id",ids);
+        List<Files> files = fileMapper.selectList(queryWrapper);
+        for (Files file : files) {
+            file.setIsDelete(true);
+            fileMapper.updateById(file);
+        }
+        return Result.success();
+    }
+
+    /**
+     * 分页查询接口
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @return
+     */
+    @GetMapping("/page")
+    public Result findOne(@RequestParam Integer pageNum,
+                          @RequestParam Integer pageSize,
+                          @RequestParam(defaultValue = "") String name
+    ){
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
+        // 查询未删除的记录
+        queryWrapper.eq("is_delete",false);
+        queryWrapper.orderByDesc("id");
+
+        if (!"".equals(name)){
+            queryWrapper.like("name", name);
+        }
+
+        return Result.success(fileMapper.selectPage(new Page<>(pageNum, pageSize),queryWrapper));
     }
 }
